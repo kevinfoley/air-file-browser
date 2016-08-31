@@ -87,14 +87,17 @@ package kevinfoley.airfilebrowser {
 		
 		/**
 		 * Search for the given pattern with the given parameters and return the resulting fileset
+		 * 
 		 * @param	pattern		A string, RegExp, or other searchable pattern
+		 * 
 		 * @param	recursive	If true, search through subdirectories as well. <b>Warning: Very CPU and memory 
-		 * intensive when run from high-level directories.</b>
-		 * @param	exactMatch	If true and the search pattern is a string, the search pattern must exactly match the
-		 * file name (with or without extension. Searching "test" or "test.jpg" will match a file named "test" with
-		 * extension "jpg"
+		 * 						intensive when run from high-level directories.</b>
+		 * @param	exactMatch	If true and the search pattern is a string, the search pattern must exactly match 
+		 * 						the file name (with or without extension.) Searching "test" or "test.jpg" will 
+		 * 						match a file named "test.jpg" but not a filed named "test1.jpg" or "mytest.jpg". 
+		 * 						Case sensitivity is determined by the <i>matchCase</i> * argument.
 		 * @param	matchCase	If true and the search pattern is a string, the search is case-sensitive.
-		 * @return	A sorted list of files
+		 * @return				A sorted list of files
 		 * 
 		 * @see #sortFiles()
 		 */
@@ -162,7 +165,7 @@ package kevinfoley.airfilebrowser {
 		
 		/**
 		 * Add the given file extension to the whitelist
-		 * @param	extension
+		 * @param	extension	A file extension <i>without period</i>, such as "txt"
 		 */
 		public function addExtensionToWhitelist(extension:String):void {
 			_whitelistedExtensions.add(extension.toLowerCase());
@@ -279,7 +282,7 @@ package kevinfoley.airfilebrowser {
 		 * Check if the given File has a blacklisted extension
 		 * @param	file
 		 * @return	True if the File has a blacklisted extension, false if it is a folder or does not have a blacklisted
-		 * extension
+		 * 			extension
 		 */
 		private function inExtensionBlacklist(file:File):Boolean {
 			if (file.isDirectory) {

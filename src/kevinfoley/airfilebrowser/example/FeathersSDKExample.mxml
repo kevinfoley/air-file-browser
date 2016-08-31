@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// =================================================================================================
+//
+//	AIR File Browser
+//	Copyright Kevin Foley. All Rights Reserved.
+//
+//	This program is free software. You can redistribute and/or modify it
+//	in accordance with the terms of the accompanying license agreement.
+//
+// =================================================================================================
+	
+	This is the document class for the Feathers SDK sample application. For information on the 
+	Feathers SDK, see http://feathersui.com/sdk/
+-->
+<f:StackScreenNavigatorApplication xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	theme="feathers.themes.MetalWorksMobileTheme" rootScreenID="{SCREEN_HOME}" addedToStage="onAddedToStage()">
+	
+	<fx:Declarations>
+	
+	</fx:Declarations>
+	
+	
+	<f:StackScreenNavigatorItem id="home">
+		<f:screen>
+			<fx:Class>kevinfoley.airfilebrowser.example.views.FileBrowserView</fx:Class>
+		</f:screen>
+	</f:StackScreenNavigatorItem>
+	
+	
+	<fx:Script><![CDATA[
+	
+		private static const SCREEN_HOME:String = "home";
+		
+		private function onAddedToStage():void {
+			
+		}
+		
+	]]></fx:Script>
+	
+</f:StackScreenNavigatorApplication>

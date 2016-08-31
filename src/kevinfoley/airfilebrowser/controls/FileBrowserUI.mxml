@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// =================================================================================================
+//
+//	AIR File Browser
+//	Copyright Kevin Foley. All Rights Reserved.
+//
+//	This program is free software. You can redistribute and/or modify it
+//	in accordance with the terms of the accompanying license agreement.
+//
+// =================================================================================================
+-->
+<f:LayoutGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fb="kevinfoley.airfilebrowser.*" 
+	xmlns:controls="kevinfoley.airfilebrowser.controls.*" 
+	addedToStage="onAddedToStage()">
+	
+	<fx:Metadata>
+		[Event(name="cancel",type="starling.events.Event")]
+	</fx:Metadata>
+	
+	<fx:Declarations>
+		<fb:FileBrowser id="fileBrowser" />
+		<f:ListCollection id="listDataProvider" data="{fileBrowser.getDirectoryListing()}" />
+	</fx:Declarations>
+
+	<f:layout>
+		<f:AnchorLayout />
+	</f:layout>
+	
+	<f:LayoutGroup id="lgNavigationButtons">
+		<f:layout>
+			<f:HorizontalLayout gap="{_buttonGap}" />
+		</f:layout>
+		<f:layoutData>
+			<f:AnchorLayoutData left="{_outerPadding}" top="{_outerPadding}" />
+		</f:layoutData>
+		
+		<f:Button id="btnBack" label="&lt;" triggered="{fileBrowser.back()}" isEnabled="{fileBrowser.isBackAvailable}" />
+		<f:Button id="btnUp" label="^" triggered="{fileBrowser.up()}" isEnabled="{fileBrowser.isUpAvailable}" />
+		<f:Button id="btnForward" label=">" triggered="{fileBrowser.forward()}" isEnabled="{fileBrowser.isForwardAvailable}" />
+	</f:LayoutGroup>
+	
+	<f:Button id="btnSearch" label="Search" triggered="onPressSearch()" isEnabled="{!(tiAddress.text.indexOf('\\') >= 0)}">
+		<f:layoutData>
+			<f:AnchorLayoutData right="{_outerPadding}" verticalCenter="0" verticalCenterAnchorDisplayObject="{lgNavigationButtons}" />
+		</f:layoutData>
+	</f:Button>
+	
+	<f:TextInput id="tiAddress" styleName="{Label.ALTERNATE_STYLE_NAME_HEADING}" text="{fileBrowser.currentDirectory.nativePath}"
+		focusIn="onFocusAddress()" enter="onPressSearch()">
+		<f:layoutData>
+			<f:AnchorLayoutData left="{_innerPadding}" leftAnchorDisplayObject="{lgNavigationButtons}" verticalCenter="0" 
+				verticalCenterAnchorDisplayObject="{lgNavigationButtons}" right="0" rightAnchorDisplayObject="{btnSearch}" />
+		</f:layoutData>
+	</f:TextInput>
+	
+	<f:List id="lFiles" dataProvider="{listDataProvider}" change="onSelectFile()">
+		<f:layoutData>
+			<f:AnchorLayoutData left="{_outerPadding}" right="{_outerPadding}" top="{_innerPadding}" bottom="{_innerPadding}"
+				topAnchorDisplayObject="{tiAddress}" bottomAnchorDisplayObject="{lgButtons}" />
+		</f:layoutData>
+		<f:itemRendererFactory>
+			<fx:Component>
+				<controls:FileListItemRenderer/>
+			</fx:Component>
+		</f:itemRendererFactory>
+	</f:List>
+	
+	<f:LayoutGroup id="lgButtons">
+		<f:layout>
+			<f:HorizontalLayout gap="{_buttonGap}" />
+		</f:layout>
+		<f:layoutData>
+			<f:AnchorLayoutData left="{_outerPadding}" right="{_outerPadding}" bottom="{_outerPadding}" />
+		</f:layoutData>
+		
+		<f:Button id="btnCancel" label="Cancel" triggered="onPressCancel()" />
+		
+	</f:LayoutGroup>
+	
+    <fx:Script>
+    <![CDATA[
+		import feathers.controls.Alert;
+		import feathers.data.ListCollection;
+		import flash.filesystem.File;
+		import kevinfoley.airfilebrowser.SortingMode;
+		import starling.core.Starling;
+		import starling.events.Event;
+		import feathers.controls.Label;
+		
+		[Bindable]
+		protected var _buttonGap:Number = 8;
+		[Bindable]
+		protected var _innerPadding:Number = 12;
+		[Bindable]
+		protected var _outerPadding:Number = 12;
+		
+		protected var alert:Alert;
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////                          PROPERTIES                          ////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		public function get buttonGap():Number {
+			return _buttonGap;
+		}
+		
+		public function set buttonGap(value:Number):void {
+			this._buttonGap = value;
+		}
+		
+		[Bindable]
+		public function get outerPadding():Number {
+			return _outerPadding;
+		}
+		public function set outerPadding(value:Number):void {
+			this._outerPadding = value;
+		}
+		
+		[Bindable]
+		public function get innerPadding():Number {
+			return _innerPadding;
+		}
+		public function set innerPadding(value:Number):void {
+			this._innerPadding = value;
+		}
+		
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////                            EVENTS                            ////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		protected function onAddedToStage():void {
+		}
+		
+		protected function onSelectFile():void {
+			var file:File = lFiles.selectedItem as File;
+			if (!file) return;
+			
+			if (file.isDirectory) {
+				fileBrowser.currentDirectory = file;
+				listDataProvider.updateAll();
+			}
+		}
+		
+		protected function onFocusAddress():void {
+			tiAddress.selectRange(0, tiAddress.text.length);
+		}
+		
+		protected function onPressSearch():void {
+			alert = Alert.show("Please wait...", "Performing search");
+			Starling.current.juggler.delayCall(performSearch, .05);
+		}
+		
+		protected function performSearch():void {
+			listDataProvider.data = fileBrowser.search(tiAddress.text, true);
+			alert.removeFromParent(true);
+		}
+		
+		protected function onPressCancel():void {
+			dispatchEventWith(Event.CANCEL);
+		}
+		
+
+    ]]>
+    </fx:Script>
+</f:LayoutGroup>

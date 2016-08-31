@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+// =================================================================================================
+//
+//	AIR File Browser
+//	Copyright Kevin Foley. All Rights Reserved.
+//
+//	This program is free software. You can redistribute and/or modify it
+//	in accordance with the terms of the accompanying license agreement.
+//
+// =================================================================================================
+-->
+<f:DefaultListItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+    xmlns:f="library://ns.feathersui.com/mxml" labelField="name" iconSourceFunction="{IconSourceFunction}" accessoryLabelFunction="{AccessoryLabelFunction}"
+ >
+	
+    <fx:Script>
+    <![CDATA[
+		import flash.display.BitmapData;
+		import flash.filesystem.File;
+		import flash.globalization.DateTimeFormatter;
+		import flash.globalization.LocaleID;
+		import flash.utils.Dictionary;
+		import starling.textures.Texture;
+		
+		private static var icons:Dictionary = new Dictionary(false);
+		
+		private static var dateTimeFormatter:DateTimeFormatter = new DateTimeFormatter(LocaleID.DEFAULT, "short", "short");
+		
+		private function IconSourceFunction(item:Object):Object {
+			var file:File = item as File;
+			if (!file) return null;
+			
+			var bmd:BitmapData = file.icon.bitmaps[file.icon.bitmaps.length - 1];
+			var texture:Texture = icons[bmd];
+			if (!texture) {
+				texture = Texture.fromBitmapData(bmd);
+				icons[bmd] = texture;
+			}
+			return texture;
+		}
+		
+		private function AccessoryLabelFunction(item:Object):String {
+			var file:File = item as File;
+			if (!file) return null;
+			return dateTimeFormatter.format(file.modificationDate);
+		}
+    ]]>
+    </fx:Script>
+</f:DefaultListItemRenderer>

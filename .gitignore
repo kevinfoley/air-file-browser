@@ -1,0 +1,9 @@
+icons/
+lib/
+MetalWorksMobileTheme/
+bat/
+FileBrowser.as3proj
+application.xml
+bin/FileBrowser.swf
+obj/
+src/kevinfoley/airfilebrowser/FileBrowserUI.as
